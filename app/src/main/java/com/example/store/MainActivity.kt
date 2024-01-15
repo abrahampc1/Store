@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.store.databinding.ActivityMainBinding
+import java.util.concurrent.LinkedBlockingQueue
 
 class MainActivity : AppCompatActivity(), OnClickListener {
 
@@ -16,8 +17,13 @@ class MainActivity : AppCompatActivity(), OnClickListener {
         setContentView(mBinding.root)
 
         mBinding.btnSave.setOnClickListener {
-            val storeEntity = StoreEntity(Name = mBinding.etName.text.toString().trim())
-            mAdapter.add(storeEntity)
+            val store = StoreEntity(Name = mBinding.etName.text.toString().trim())
+
+            Thread{
+                StoreApplication.database.storeDao().addStore(store)
+            }.start()
+
+            mAdapter.add(store)
         }
 
         setupRecyclerView()
@@ -26,6 +32,7 @@ class MainActivity : AppCompatActivity(), OnClickListener {
     private fun setupRecyclerView() {
         mAdapter = StoreAdapter(mutableListOf(), this)
         mGridLayout = GridLayoutManager(this,2)
+        getStores()
 
         mBinding.RecyvlerView.apply {
             setHasFixedSize(true)
@@ -35,6 +42,17 @@ class MainActivity : AppCompatActivity(), OnClickListener {
     }
 
 
+    fun getStores(){
+
+        val queue = LinkedBlockingQueue<MutableList<StoreEntity>>()
+
+        Thread{
+            val stores = StoreApplication.database.storeDao().getAllStores()
+            queue.add(stores)
+        }.start()
+
+        mAdapter.setStores(queue.take())
+    }
     /**
      * OnClickListener
      * **/

@@ -44,4 +44,9 @@ RecyclerView.Adapter<StoreAdapter.ViewHolder>(){
         notifyDataSetChanged()
     }
 
+    fun setStores(stores: MutableList<StoreEntity>) {
+        this.stores = stores
+        notifyDataSetChanged()
+    }
+
 }
