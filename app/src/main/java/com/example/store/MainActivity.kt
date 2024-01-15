@@ -2,8 +2,6 @@ package com.example.store
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.renderscript.ScriptGroup.Binding
-import android.widget.GridLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.store.databinding.ActivityMainBinding
 
@@ -18,8 +16,8 @@ class MainActivity : AppCompatActivity(), OnClickListener {
         setContentView(mBinding.root)
 
         mBinding.btnSave.setOnClickListener {
-            val store = Store(Name = mBinding.etName.text.toString().trim())
-            mAdapter.add(store)
+            val storeEntity = StoreEntity(Name = mBinding.etName.text.toString().trim())
+            mAdapter.add(storeEntity)
         }
 
         setupRecyclerView()
@@ -40,7 +38,7 @@ class MainActivity : AppCompatActivity(), OnClickListener {
     /**
      * OnClickListener
      * **/
-    override fun OnClick(store: Store) {
+    override fun OnClick(storeEntity: StoreEntity) {
         TODO("Not yet implemented")
     }
 }
