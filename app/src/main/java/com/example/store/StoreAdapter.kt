@@ -38,4 +38,10 @@ RecyclerView.Adapter<StoreAdapter.ViewHolder>(){
             binding.TvName.text = store.Name
         }
     }
+
+    fun add(store: Store) {
+        stores.add(store)
+        notifyDataSetChanged()
+    }
+
 }
