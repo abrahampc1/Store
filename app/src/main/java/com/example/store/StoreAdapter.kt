@@ -17,6 +17,10 @@ RecyclerView.Adapter<StoreAdapter.ViewHolder>(){
 
         fun setListener(storeEntity: StoreEntity){
             binding.root.setOnClickListener{listener.OnClick(storeEntity)}
+
+            binding.cbFavorite.setOnClickListener{
+                listener.onFavoriteStore(storeEntity)
+            }
         }
     }
 
@@ -36,6 +40,7 @@ RecyclerView.Adapter<StoreAdapter.ViewHolder>(){
         with(holder){
             setListener(store)
             binding.TvName.text = store.Name
+            binding.cbFavorite.isChecked = store.isFavorite
         }
     }
 
@@ -47,6 +52,14 @@ RecyclerView.Adapter<StoreAdapter.ViewHolder>(){
     fun setStores(stores: MutableList<StoreEntity>) {
         this.stores = stores
         notifyDataSetChanged()
+    }
+
+    fun update(storeEntity: StoreEntity) {
+        val index = stores.indexOf(storeEntity)
+        if (index != -1){
+            stores.set(index,storeEntity)
+            notifyItemChanged(index)
+        }
     }
 
 }
