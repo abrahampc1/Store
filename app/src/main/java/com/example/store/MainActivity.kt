@@ -57,7 +57,6 @@ class MainActivity : AppCompatActivity(), OnClickListener {
      * OnClickListener
      * **/
     override fun OnClick(storeEntity: StoreEntity) {
-
     }
 
     override fun onFavoriteStore(storeEntity: StoreEntity) {
@@ -68,5 +67,14 @@ class MainActivity : AppCompatActivity(), OnClickListener {
             queue.add(storeEntity)
         }.start()
         mAdapter.update(queue.take())
+    }
+
+    override fun onDeleteStore(storeEntity: StoreEntity) {
+        val queue = LinkedBlockingQueue<StoreEntity>()
+        Thread{
+            StoreApplication.database.storeDao().deleteStore(storeEntity)
+            queue.add(storeEntity)
+        }.start()
+        mAdapter.delete(queue.take())
     }
 }

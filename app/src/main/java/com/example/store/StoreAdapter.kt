@@ -16,10 +16,15 @@ RecyclerView.Adapter<StoreAdapter.ViewHolder>(){
         val binding = ItemStoreBinding.bind(view)
 
         fun setListener(storeEntity: StoreEntity){
-            binding.root.setOnClickListener{listener.OnClick(storeEntity)}
-
-            binding.cbFavorite.setOnClickListener{
-                listener.onFavoriteStore(storeEntity)
+            with(binding.root){
+                setOnClickListener{listener.OnClick(storeEntity)}
+                setOnLongClickListener {
+                    listener.onDeleteStore(storeEntity)
+                true
+                }
+                binding.cbFavorite.setOnClickListener{
+                    listener.onFavoriteStore(storeEntity)
+                }
             }
         }
     }
@@ -59,6 +64,14 @@ RecyclerView.Adapter<StoreAdapter.ViewHolder>(){
         if (index != -1){
             stores.set(index,storeEntity)
             notifyItemChanged(index)
+        }
+    }
+
+    fun delete(storeEntity: StoreEntity) {
+        val index = stores.indexOf(storeEntity)
+        if (index != -1){
+            stores.removeAt(index)
+            notifyItemRemoved(index)
         }
     }
 
