@@ -44,6 +44,7 @@ class EditStoreFragment : Fragment() {
         inflater.inflate(R.menu.menu_save, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId){
             android.R.id.home -> {
@@ -57,6 +58,8 @@ class EditStoreFragment : Fragment() {
 
                 val queue = LinkedBlockingQueue<Long?>()
                 thread {
+                    mActivity?.addStore(store)
+                    hideKeyboard()
                     val id = StoreApplication.database.storeDao().addStore(store)
                     queue.add(id)
                 }.start()
@@ -79,7 +82,7 @@ class EditStoreFragment : Fragment() {
         val imm = mActivity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(requireView().windowToken, 0)
     }
-  fun onDestoyView(){
+  override fun onDestroyView(){
         hideKeyboard()
         super.onDestroyView()
     }
@@ -91,5 +94,3 @@ class EditStoreFragment : Fragment() {
         super.onDestroy()
     }
 }
-
-
