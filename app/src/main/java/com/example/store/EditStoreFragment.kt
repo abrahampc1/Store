@@ -10,8 +10,13 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.store.databinding.FragmentEditStoreBinding
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.NonCancellable.start
 import java.util.concurrent.LinkedBlockingQueue
 import kotlin.concurrent.thread
 
@@ -38,6 +43,14 @@ class EditStoreFragment : Fragment() {
         mActivity?.supportActionBar?.title = getString(R.string.edit_store_title_add)
 
         setHasOptionsMenu(true)
+
+        mBinding.imgPhotoURL.addTextChangedListener{
+            Glide.with(this)
+                .load(mBinding.imgPhotoURL.text.toString())
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .centerCrop()
+                .into(mBinding.imgPhoto)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -57,18 +70,18 @@ class EditStoreFragment : Fragment() {
                     WebSite = mBinding.etWebSite.text.toString().trim())
 
                 val queue = LinkedBlockingQueue<Long?>()
+
                 thread {
                     mActivity?.addStore(store)
                     hideKeyboard()
                     val id = StoreApplication.database.storeDao().addStore(store)
                     queue.add(id)
-                }.start()
+                    start()
+                }
 
                 queue.take()?.let{
-                    Snackbar.make(mBinding.root,
-                        R.string.edit_store_save_message_success,
-                        Snackbar.LENGTH_SHORT)
-                        .show()
+
+                    Toast.makeText(mActivity, R.string.edit_store_save_message_success, Toast.LENGTH_SHORT).show()
                     mActivity?.onBackPressedDispatcher?.onBackPressed()
                 }
                 true

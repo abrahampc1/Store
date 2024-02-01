@@ -5,5 +5,4 @@ interface OnClickListener {
     fun onFavoriteStore(storeEntity: StoreEntity)
     fun onDeleteStore(storeEntity: StoreEntity)
 
-
 }
