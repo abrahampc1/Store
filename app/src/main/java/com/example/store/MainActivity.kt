@@ -3,6 +3,7 @@ package com.example.store
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.store.R.*
 import com.example.store.databinding.ActivityMainBinding
 import java.util.concurrent.LinkedBlockingQueue
 
@@ -21,12 +22,14 @@ class MainActivity : AppCompatActivity(), OnClickListener, MainAux {
         setupRecyclerView()
     }
 
-    private fun launchEditFragment() {
+    private fun launchEditFragment(args : Bundle? = null) {
         val fragment = EditStoreFragment()
+        if (args != null) fragment.arguments = args
+
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
 
-        fragmentTransaction.add(R.id.containerMain, fragment)
+        fragmentTransaction.add(id.containerMain, fragment)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
 
@@ -61,7 +64,11 @@ class MainActivity : AppCompatActivity(), OnClickListener, MainAux {
     /**
      * OnClickListener
      * **/
-    override fun OnClick(storeEntity: StoreEntity) {
+    override fun OnClick(storeId: Long) {
+        val args = Bundle()
+        args.putLong(getString(R.string.id_args), storeId)
+
+        launchEditFragment(args)
     }
 
     override fun onFavoriteStore(storeEntity: StoreEntity) {
@@ -96,6 +103,6 @@ class MainActivity : AppCompatActivity(), OnClickListener, MainAux {
     }
 
     override fun updateStore(storeEntity: StoreEntity) {
-        TODO("Not yet implemented")
+
     }
 }

@@ -11,4 +11,5 @@
     <string name="edit_store_title_add">Crear tienda</string>
     <string name="menu_save">Save</string>
     <string name="edit_store_save_message_success">Tienda agregada correctamente.</string>
+    <string name="id_args">key_id</string>
 </resources>

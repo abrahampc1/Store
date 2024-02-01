@@ -24,6 +24,8 @@ class EditStoreFragment : Fragment() {
 
     private lateinit var mBinding: FragmentEditStoreBinding
     private var mActivity : MainActivity? = null
+    private var mIsEditMode : Boolean = false
+    private var mStoreEntity : StoreEntity? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,6 +40,14 @@ class EditStoreFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val id = arguments?.getLong(getString(R.string.id_args), 0)
+        if (id != null && id != 0L){
+            mIsEditMode = true
+            getStore(id)
+        } else {
+            Toast.makeText(activity, id.toString(), Toast.LENGTH_SHORT).show()
+        }
+
         mActivity = activity as? MainActivity
         mActivity?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         mActivity?.supportActionBar?.title = getString(R.string.edit_store_title_add)
@@ -50,6 +60,17 @@ class EditStoreFragment : Fragment() {
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .centerCrop()
                 .into(mBinding.imgPhoto)
+        }
+    }
+
+    private fun getStore(id: Long) {
+        val queue = LinkedBlockingQueue<StoreEntity?>()
+        Thread{
+            mStoreEntity = StoreApplication.database.storeDao().getStoreById(id)
+            queue.add(mStoreEntity)
+        }.start()
+        queue.take()?.let {
+            
         }
     }
 
@@ -67,7 +88,8 @@ class EditStoreFragment : Fragment() {
             R.id.action_save -> {
                 val store = StoreEntity(Name = mBinding.etName.text.toString().trim(),
                     Phone = mBinding.etPhone.text.toString().trim(),
-                    WebSite = mBinding.etWebSite.text.toString().trim())
+                    WebSite = mBinding.etWebSite.text.toString().trim(),
+                    photoUrl = mBinding.imgPhotoURL.text.toString().trim())
 
                 val queue = LinkedBlockingQueue<Long?>()
 

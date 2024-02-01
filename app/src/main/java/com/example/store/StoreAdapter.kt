@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.store.databinding.ItemStoreBinding
 
 class StoreAdapter(private var stores: MutableList<StoreEntity>, private var listener: OnClickListener) :
@@ -17,7 +19,7 @@ RecyclerView.Adapter<StoreAdapter.ViewHolder>(){
 
         fun setListener(storeEntity: StoreEntity){
             with(binding.root){
-                setOnClickListener{listener.OnClick(storeEntity)}
+                setOnClickListener{listener.OnClick(storeEntity.id)}
                 setOnLongClickListener {
                     listener.onDeleteStore(storeEntity)
                 true
@@ -46,6 +48,12 @@ RecyclerView.Adapter<StoreAdapter.ViewHolder>(){
             setListener(store)
             binding.TvName.text = store.Name
             binding.cbFavorite.isChecked = store.isFavorite
+
+            Glide.with(mContext)
+                .load(store.photoUrl)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .centerCrop()
+                .into(binding.imgPhoto)
         }
     }
 
