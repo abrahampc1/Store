@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, MainAux {
     }
     private fun setupRecyclerView() {
         mAdapter = StoreAdapter(mutableListOf(), this)
-        mGridLayout = GridLayoutManager(this,2)
+        mGridLayout = GridLayoutManager(this,resources.getInteger(R.integer.main_columns))
         getStores()
 
         mBinding.RecyvlerView.apply {
@@ -90,22 +90,22 @@ class MainActivity : AppCompatActivity(), OnClickListener, MainAux {
 
         MaterialAlertDialogBuilder(this)
             .setTitle(R.string.dialog_option_title)
-            .setItems(items, { dialogInterface, i ->
+            .setItems(items) { _, i ->
                 when(i){
                     0 -> confirmDelete(storeEntity)
                     1 -> dial(storeEntity.Phone)
                     2 -> goToWebsite(storeEntity.WebSite)
                 }
-            })
+            }
             .show()
     }
 
     private fun confirmDelete(storeEntity: StoreEntity){
         MaterialAlertDialogBuilder(this)
             .setTitle(R.string.dialog_delete_title)
-            .setPositiveButton(R.string.delete_title_confirm,  { dialogInterface, i ->
+            .setPositiveButton(R.string.delete_title_confirm) { _, _ ->
 
-            } )
+            }
             .setNegativeButton(R.string.dialog_delete_cancel, null)
             .show()
         val queue = LinkedBlockingQueue<StoreEntity>()

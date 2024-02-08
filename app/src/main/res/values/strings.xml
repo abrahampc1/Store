@@ -21,4 +21,7 @@
     <string name="dialog_option_title">¿Qué deseas hacer?</string>
     <string name="main_error_no_website">Esta tienda no cuenta con sitio web..</string>
     <string name="main_error_no_resolve">No se encontró ninuna app compatible</string>
+    <string name="dialog_exist_title">¿Desea salir de esta pantalla?\n</string>
+    <string name="dialog_exist_message">Si no ha guardado cambios, se perderán</string>
+    <string name="dialog_exit_ok">Salir</string>
 </resources>

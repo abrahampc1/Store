@@ -12,10 +12,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import android.window.OnBackAnimationCallback
+import androidx.activity.OnBackPressedCallback
 import androidx.core.widget.addTextChangedListener
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.store.databinding.FragmentEditStoreBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.NonCancellable.start
@@ -104,6 +107,25 @@ class EditStoreFragment : Fragment() {
 
    private fun String.editable(): Editable = Editable.Factory.getInstance().newEditable(this)
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        requireActivity().onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                MaterialAlertDialogBuilder(requireActivity())
+                    .setTitle(R.string.dialog_exist_title)
+                    .setMessage(R.string.dialog_exist_message)
+                    .setPositiveButton(R.string.dialog_exit_ok){_, _->
+                        if (isEnabled) {
+                            isEnabled = false
+                            requireActivity().onBackPressedDispatcher.onBackPressed()
+                        }
+                    }
+                    .setNegativeButton(R.string.dialog_delete_cancel, null)
+                    .show()
+            }
+        })
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_save, menu)
         super.onCreateOptionsMenu(menu, inflater)
@@ -112,7 +134,7 @@ class EditStoreFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId){
             android.R.id.home -> {
-                mActivity?.onBackPressedDispatcher?.onBackPressed()
+                requireActivity().onBackPressedDispatcher.onBackPressed()
                 true
             }
             R.id.action_save -> {
@@ -154,7 +176,7 @@ class EditStoreFragment : Fragment() {
                             Snackbar.make(mBinding.root, R.string.edit_store_save_message_success,
                                 Snackbar.LENGTH_SHORT).show()
 
-                            mActivity?.onBackPressedDispatcher?.onBackPressed()
+                            requireActivity().onBackPressedDispatcher.onBackPressed()
                         }
                     }
                 }

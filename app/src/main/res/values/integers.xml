@@ -2,4 +2,5 @@
 <resources>
     <integer name="line_url_website">2</integer>
     <integer name="line_url_photo">4</integer>
+    <integer name="main_columns">2</integer>
 </resources>

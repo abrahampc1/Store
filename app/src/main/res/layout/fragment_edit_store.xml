@@ -59,6 +59,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hint_website"
+            app:helperText="@string/helper_required"
             app:endIconMode="clear_text"
             app:startIconDrawable="@drawable/icon_link"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -88,6 +89,7 @@
                 android:layout_weight="1"
                 app:endIconMode="clear_text"
                 android:hint="@string/hint_phone_url"
+                app:helperText="@string/helper_required"
                 app:startIconDrawable="@drawable/icon_link"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
