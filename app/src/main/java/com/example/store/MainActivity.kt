@@ -1,10 +1,15 @@
 package com.example.store
 
+import android.content.DialogInterface
+import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.store.R.*
 import com.example.store.databinding.ActivityMainBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.concurrent.LinkedBlockingQueue
 
 class MainActivity : AppCompatActivity(), OnClickListener, MainAux {
@@ -49,7 +54,6 @@ class MainActivity : AppCompatActivity(), OnClickListener, MainAux {
         }
     }
 
-
     fun getStores(){
 
         val queue = LinkedBlockingQueue<MutableList<StoreEntity>>()
@@ -78,16 +82,67 @@ class MainActivity : AppCompatActivity(), OnClickListener, MainAux {
             StoreApplication.database.storeDao().updateStore(storeEntity)
             queue.add(storeEntity)
         }.start()
-        mAdapter.update(queue.take())
+        updateStore(queue.take())
     }
 
     override fun onDeleteStore(storeEntity: StoreEntity) {
+        val items = resources.getStringArray(R.array.array_option_item)
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.dialog_option_title)
+            .setItems(items, { dialogInterface, i ->
+                when(i){
+                    0 -> confirmDelete(storeEntity)
+                    1 -> dial(storeEntity.Phone)
+                    2 -> goToWebsite(storeEntity.WebSite)
+                }
+            })
+            .show()
+    }
+
+    private fun confirmDelete(storeEntity: StoreEntity){
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.dialog_delete_title)
+            .setPositiveButton(R.string.delete_title_confirm,  { dialogInterface, i ->
+
+            } )
+            .setNegativeButton(R.string.dialog_delete_cancel, null)
+            .show()
         val queue = LinkedBlockingQueue<StoreEntity>()
         Thread{
             StoreApplication.database.storeDao().deleteStore(storeEntity)
             queue.add(storeEntity)
         }.start()
         mAdapter.delete(queue.take())
+    }
+
+    private fun dial(phone : String){
+        val callIntent = Intent().apply {
+            action = Intent.ACTION_DIAL
+            data = Uri.parse("tel:$phone")
+        }
+
+        startIntent(callIntent)
+    }
+
+    private fun goToWebsite(website : String){
+        if (website.isEmpty()){
+            Toast.makeText(this, R.string.main_error_no_website, Toast.LENGTH_LONG).show()
+        }else {
+            val websiteIntent = Intent().apply {
+                action = Intent.ACTION_VIEW
+                data = Uri.parse(website)
+            }
+
+            startIntent(websiteIntent)
+        }
+    }
+
+    private fun startIntent(intent: Intent){
+        if (intent.resolveActivity(packageManager) != null)
+            startActivity(intent)
+        else
+            Toast.makeText(this, R.string.main_error_no_resolve, Toast.LENGTH_LONG).show()
     }
 
     /***
@@ -103,6 +158,6 @@ class MainActivity : AppCompatActivity(), OnClickListener, MainAux {
     }
 
     override fun updateStore(storeEntity: StoreEntity) {
-
+        mAdapter.update(storeEntity)
     }
 }

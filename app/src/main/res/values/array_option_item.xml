@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="array_option_item">
+        <item>Eliminar</item>
+        <item>LLamar</item>
+        <item>Ir al sitio web</item>
+    </string-array>
+</resources>
